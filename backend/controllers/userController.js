@@ -107,7 +107,7 @@ const loginUser =async (req, res) => {
 const updateUserProfile = async(req, res)=>{
     const {userId} = req.user;
     const {name} = req.body;
-    const avatarFile = req.files ? req.files.avatar : null;
+    const avatarPath = "/" + req.file.destination + '/' + req.file.filename;
     try {
         const user = await User.findOne({_id: userId});
         if (!user) {
@@ -118,32 +118,12 @@ const updateUserProfile = async(req, res)=>{
             user.name = name;
         }
         // IF User UPLOAD A Profile Pic
-        if (avatarFile) {
-        const allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf"]; // Allowed Exteniosn
-        const fileExtension = path.extname(avatarFile.name).toLowerCase(); // Checking User File Extension
-  
-        //if user have not allowed extensions
-        if (!allowedExtensions.includes(fileExtension)) {
-          return res.status(400).json({ message: "Invalid file type. Please Try Another File Type" });
+        if (req.file) {
+        const isDefaultAvatar = user.avatar.includes('/public/default/default_profile_pic.png');
+        if (!isDefaultAvatar && fs.existsSync(user.avatar)) {
+            fs.unlinkSync(user.avatar);
         }
-  
-        const uniqueImageName = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const folderPathImage = path.join(__dirname,"..","public","users_profile_images");
-        const avatarPathImage = path.join(__dirname,"..","public");
-        // IF FOULDER NOT EXIST
-        if (!fs.existsSync(folderPathImage)) {
-          fs.mkdirSync(folderPathImage, { recursive: true });
-        }
-
-        const avatarPath = path.join(folderPathImage, uniqueImageName + fileExtension);
-
-        const isDefaultAvatar = user.avatar.includes('/default/default_profile_pic.png');
-        if (!isDefaultAvatar && fs.existsSync(avatarPathImage + user.avatar)) {
-            fs.unlinkSync(avatarPathImage + user.avatar);
-        }
-        // Move the uploaded file to the server
-        await avatarFile.mv(avatarPath);
-        user.avatar = `/users_profile_images/${uniqueImageName + fileExtension}`;
+        user.avatar = avatarPath;
       }
 
       await user.save();

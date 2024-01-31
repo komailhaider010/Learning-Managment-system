@@ -1,25 +1,9 @@
-const { response } = require('express');
 const Course = require('../models/courseModel');
-const fs = require('fs');
-const path = require('path');
 const { handleFileUpload } = require('../config/fileUpload');
 
 const CreateCourse = async (req, res) => {
     const courseData = req.body;
     try {
-        var thumbnail, demoVideo;
-        // IF User UPLOAD A Thumbnil File
-        if (req.files.thumbnail) {
-            const allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf"]; // Allowed Exteniosn
-            const fileFolderPath = path.join(__dirname,"..","public","course_thumbnails");
-            thumbnail = `/course_thumbnails/`+ await handleFileUpload(req.files.thumbnail, allowedExtensions, fileFolderPath, res)
-          }
-        // IF User UPLOAD A Demo Video File
-        if (req.files.demoVideo) {
-            const allowedExtensions = [".mp4", ".WebM"]; // Allowed Exteniosn
-            const fileFolderPath = path.join(__dirname,"..","public","course_demoVideos");
-            demoVideo = `/course_demoVideos/`+ await handleFileUpload(req.files.demoVideo, allowedExtensions, fileFolderPath, res)
-          }
         const courseCreated = await Course.create({
             name: courseData.name,
             description: courseData.description,
@@ -27,8 +11,8 @@ const CreateCourse = async (req, res) => {
             estimatedPrice: courseData.estimatedPrice,
             tags: courseData.tags,
             level: courseData.level,
-            thumbnail: thumbnail,
-            demoVideo: demoVideo,
+            thumbnail: "",
+            demoVideo: "",
             benifits: courseData.benifits,
             prerequisities: courseData.prerequisities,
         });
@@ -40,6 +24,42 @@ const CreateCourse = async (req, res) => {
     }
 
 }
+
+const uploadCourseThumbnail = async (req, res) => {
+    const {courseId} = req.params;
+    const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
+    try {
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: 'Chapter not found' });
+        }
+        course.thumbnail = thumbnail;
+        await course.save();
+        res.status(200).json({course ,message: 'Sucessfully Upload Course Thumbnail'});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+};
+const uploadCourseDemoVideo = async (req, res) => {
+    const {courseId} = req.params;
+    const demoVideo = "/" + req.file.destination + '/' + req.file.filename;
+    try {
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: 'Chapter not found' });
+        }
+        course.demoVideo = demoVideo;
+        await course.save();
+        res.status(200).json({course ,message: 'Sucessfully Upload Course Demo Video'});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+};
+
 
 const updateCourseData = async (req, res) => {
     const {courseId} = req.params;
@@ -110,6 +130,8 @@ const getCourseDetails = async (req, res) => {
 
 module.exports = {
     CreateCourse,
+    uploadCourseThumbnail,
+    uploadCourseDemoVideo,
     updateCourseData,
     getAllCourses,
     getCourseDetails,

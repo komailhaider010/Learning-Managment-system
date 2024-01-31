@@ -2,15 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const Chapter = require('../models/chapterModel');
 const Course = require('../models/courseModel');
-const {handleFileUpload} = require('../config/fileUpload');
-const { log } = require('console');
 
 
 const createChapter = async(req, res)=>{
     const {courseId} = req.params;
-    const {title, description, videoLength, videoPlayer, suggestions, } = req.body;
+    const {title, description, videoPlayer, suggestions, } = req.body;
     try {
-        var video , thumbnail;
         if(!courseId){
             return res.status(400).json({message: 'Course Id required'});
         }
@@ -18,28 +15,15 @@ const createChapter = async(req, res)=>{
         if(!course){
             return res.status(404).json({message: 'Course Not Found'});
         }
-        // IF User UPLOAD A Thumbnail File
-        if (req.files && req.files.thumbnail) {
-            const allowedExtensions = ['.jpg', '.jpeg', '.png', '.pdf'];
-            const fileFolderPath = path.join(__dirname, '..', 'public', 'chapter_thumbnails');
-            thumbnail = `/chapter_thumbnails/` + await handleFileUpload(req.files.thumbnail, allowedExtensions, fileFolderPath,res,);
-        }
-
-        // If UUpload a video file
-        if (req.files && req.files.video) {
-            const allowedExtensions = ['.mp4', '.webm']; // Allowed Extensions
-            const fileFolderPath = path.join(__dirname, '..', 'public', 'chapter_videos');
-            video = `/chapter_videos/` + await handleFileUpload(req.files.video, allowedExtensions, fileFolderPath,res);
-        }
         try {
             const chapterCreated = await Chapter.create({
                 title,
                 description,
-                videoLength,
+                videoLength: "",
                 videoPlayer,
                 suggestions,
-                thumbnail,
-                video,
+                thumbnail : "",
+                video: "",
             });
             course.chapters.push(chapterCreated);
             await course.save();
@@ -56,8 +40,47 @@ const createChapter = async(req, res)=>{
 
 }
 
+const uploadChapterThumbnail = async (req, res) => {
+    const {chapterId} = req.params;
+    const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
+    try {
+        const chapter = await Chapter.findById(chapterId);
+        if (!chapter) {
+            return res.status(404).json({ message: 'Chapter not found' });
+        }
+        chapter.thumbnail = thumbnail;
+        await chapter.save();
+        res.status(200).json({chapter ,message: 'Sucessfully Upload Chapter Thumbnail'});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+};
+const uploadChapterVideo = async (req, res) => {
+    const {chapterId} = req.params;
+    const {videoLength} = req.body;
+    const video = "/" + req.file.destination + '/' + req.file.filename;
+    try {
+        const chapter = await Chapter.findById(chapterId);
+        if (!chapter) {
+            return res.status(404).json({ message: 'Chapter not found' });
+        }
+        chapter.video = video;
+        chapter.videoLength = videoLength;
+        await chapter.save();
+        res.status(200).json({chapter ,message: 'Sucessfully Upload Chapter Thumbnail'});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+};
+
 
 
 module.exports = {
     createChapter,
+    uploadChapterThumbnail,
+    uploadChapterVideo,
 }
