@@ -1,4 +1,6 @@
 const Course = require('../models/courseModel');
+const User = require('../models/userModel');
+const Comment = require('../models/commentModel');
 const { handleFileUpload } = require('../config/fileUpload');
 
 const CreateCourse = async (req, res) => {
@@ -127,6 +129,38 @@ const getCourseDetails = async (req, res) => {
     }
 }
 
+const getCourseByUser = async(req, res)=>{
+    const {userId} = req.user;
+    const {courseId} = req.params;
+    try {
+        const {courses} = await User.findOne({ _id: userId})
+        .populate({
+            path: 'courses',
+            populate: {
+              path: 'chapters',
+              populate: {
+                path: 'questions',
+              },
+            },
+          });
+        // .populate({path: 'courses', populate:{path: 'chapters', populate:{path: 'questions'}}})
+
+        if(!courses) {
+            return res.status(400).json({message: 'You are not eligible'});
+        }
+        // Find the specific course within the user's courses array
+        const matchingCourse = courses.find(course => course._id == courseId);
+        if (!matchingCourse) {
+            return res.status(400).json({message: 'You are not eligible'});
+        }
+        res.status(200).json({matchingCourse})
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+}
+
 
 module.exports = {
     CreateCourse,
@@ -135,4 +169,5 @@ module.exports = {
     updateCourseData,
     getAllCourses,
     getCourseDetails,
+    getCourseByUser,
 }

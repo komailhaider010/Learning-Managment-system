@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const Chapter = require('../models/chapterModel');
 const Course = require('../models/courseModel');
 
