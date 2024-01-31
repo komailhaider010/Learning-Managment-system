@@ -8,6 +8,7 @@ const status = require('express-status-monitor')
 const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const chapterRoutes = require('./routes/chapterRoutes');
+const commentsRoutes = require('./routes/commentRoutes');
 
 const PORT = process.env.PORT || 8000
 const app = express();
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 app.use(userRoutes);
 app.use(courseRoutes);
 app.use(chapterRoutes);
+app.use(commentsRoutes);
 
 
 // Create server

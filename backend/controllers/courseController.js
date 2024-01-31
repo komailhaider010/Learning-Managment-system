@@ -62,7 +62,6 @@ const uploadCourseDemoVideo = async (req, res) => {
     }
 };
 
-
 const updateCourseData = async (req, res) => {
     const {courseId} = req.params;
     const {name, description, price, tags, level, benifits, prerequisities} = req.body;
@@ -143,7 +142,6 @@ const getCourseByUser = async(req, res)=>{
               },
             },
           });
-        // .populate({path: 'courses', populate:{path: 'chapters', populate:{path: 'questions'}}})
 
         if(!courses) {
             return res.status(400).json({message: 'You are not eligible'});
