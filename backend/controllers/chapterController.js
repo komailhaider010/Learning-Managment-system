@@ -40,12 +40,15 @@ const createChapter = async(req, res)=>{
 
 const uploadChapterThumbnail = async (req, res) => {
     const {chapterId} = req.params;
-    const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
     try {
+        if(!req.file){
+            res.status(400).json({ message: 'File not found' });
+        }
         const chapter = await Chapter.findById(chapterId);
         if (!chapter) {
             return res.status(404).json({ message: 'Chapter not found' });
         }
+        const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
         chapter.thumbnail = thumbnail;
         await chapter.save();
         res.status(200).json({chapter ,message: 'Sucessfully Upload Chapter Thumbnail'});
@@ -58,12 +61,15 @@ const uploadChapterThumbnail = async (req, res) => {
 const uploadChapterVideo = async (req, res) => {
     const {chapterId} = req.params;
     const {videoLength} = req.body;
-    const video = "/" + req.file.destination + '/' + req.file.filename;
     try {
+        if (!req.file) {
+            res.status(400).json({ message: 'File not found' });
+        }
         const chapter = await Chapter.findById(chapterId);
         if (!chapter) {
             return res.status(404).json({ message: 'Chapter not found' });
         }
+        const video = "/" + req.file.destination + '/' + req.file.filename;
         chapter.video = video;
         chapter.videoLength = videoLength;
         await chapter.save();

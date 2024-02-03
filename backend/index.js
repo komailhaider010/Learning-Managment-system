@@ -9,11 +9,13 @@ const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const chapterRoutes = require('./routes/chapterRoutes');
 const commentsRoutes = require('./routes/commentRoutes');
+const { uploadFile } = require('./config/fileUpload');
 
 const PORT = process.env.PORT || 8000
 const app = express();
 
 app.use(status());
+app.use(express.json())
 app.use(express.urlencoded({extended: false}));
 app.use(cookieparser());
 app.use(cors());

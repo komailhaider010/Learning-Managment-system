@@ -6,7 +6,6 @@ const addComment = async (req, res) => {
     const {content} = req.body;
     const {chapterId} = req.params;
     const {userId} = req.user;
-    console.log(content);
     try {
         if (!content) {
             return res.status(400).json({message: "Please Required field"});

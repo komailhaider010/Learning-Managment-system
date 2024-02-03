@@ -1,5 +1,7 @@
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
+
 
 const handleFileUpload = async (file, allowedExtensions, folderPath, res) => {
     if (file) {
