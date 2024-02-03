@@ -1,6 +1,6 @@
 const Course = require('../models/courseModel');
 const User = require('../models/userModel');
-const Comment = require('../models/commentModel');
+// const Comment = require('../models/commentModel');
 const { handleFileUpload } = require('../config/fileUpload');
 
 const CreateCourse = async (req, res) => {
@@ -132,16 +132,38 @@ const getCourseByUser = async(req, res)=>{
     const {userId} = req.user;
     const {courseId} = req.params;
     try {
-        const {courses} = await User.findOne({ _id: userId})
-        .populate({
+        const { courses } = await User.findOne({ _id: userId })
+          .populate({
             path: 'courses',
             populate: {
               path: 'chapters',
               populate: {
                 path: 'questions',
+                populate: {
+                  path: 'user',
+                  select: '-password -email -courses -isVerified',
+                },
+              },
+            },
+          })
+          .populate({
+            path: 'courses',
+            populate: {
+              path: 'chapters',
+              populate: {
+                path: 'questions',
+                populate: {
+                  path: 'replies',
+                  select: '-password -email -courses -isVerified',
+                  populate: {
+                    path: 'user',
+                    select: '-password -email -courses -isVerified',
+                  },
+                },
               },
             },
           });
+        
 
         if(!courses) {
             return res.status(400).json({message: 'You are not eligible'});
