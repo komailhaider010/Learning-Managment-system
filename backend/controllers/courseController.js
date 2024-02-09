@@ -13,8 +13,8 @@ const CreateCourse = async (req, res) => {
             estimatedPrice: courseData.estimatedPrice,
             tags: courseData.tags,
             level: courseData.level,
-            thumbnail: "",
-            demoVideo: "",
+            thumbnail: courseData.thumbnail,
+            demoVideo: courseData.demoVideo,
             benifits: courseData.benifits,
             prerequisities: courseData.prerequisities,
         });
@@ -28,34 +28,24 @@ const CreateCourse = async (req, res) => {
 }
 
 const uploadCourseThumbnail = async (req, res) => {
-    const {courseId} = req.params;
     const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
     try {
-        const course = await Course.findById(courseId);
-        if (!course) {
-            return res.status(404).json({ message: 'Chapter not found' });
+        if (!thumbnail) {
+            return res.status(400).json({ message: "Thumbnail not uploaded"})
         }
-        course.thumbnail = thumbnail;
-        await course.save();
-        res.status(200).json({course ,message: 'Sucessfully Upload Course Thumbnail'});
-        
+        res.status(200).json({thumbnail ,message: 'Sucessfully Upload Course Thumbnail'});    
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' }); 
     }
 };
 const uploadCourseDemoVideo = async (req, res) => {
-    const {courseId} = req.params;
     const demoVideo = "/" + req.file.destination + '/' + req.file.filename;
     try {
-        const course = await Course.findById(courseId);
-        if (!course) {
-            return res.status(404).json({ message: 'Chapter not found' });
+        if (!demoVideo) {
+            return res.status(404).json({ message: 'Demo Video not Uploaded' });
         }
-        course.demoVideo = demoVideo;
-        await course.save();
-        res.status(200).json({course ,message: 'Sucessfully Upload Course Demo Video'});
-        
+        res.status(200).json({demoVideo ,message: 'Sucessfully Upload Course Demo Video'});
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' }); 

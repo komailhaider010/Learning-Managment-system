@@ -45,8 +45,8 @@ const videoUpload = multer({storage: videoStorage}).single('video')
 
 // Creating Course Chapter
 router.post("/api/:courseId/create-chapter",authenticateAdmin,createChapter);
-router.post("/api/:chapterId/upload-thumbnail",authenticateAdmin,thumbnailUpload, uploadChapterThumbnail);
-router.post("/api/:chapterId/upload-video",authenticateAdmin,videoUpload, uploadChapterVideo);
+router.post("/api/chapter/upload-thumbnail",authenticateAdmin,thumbnailUpload, uploadChapterThumbnail);
+router.post("/api/chapter/upload-video",authenticateAdmin,videoUpload, uploadChapterVideo);
   
 module.exports = router;
   

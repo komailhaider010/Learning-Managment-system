@@ -4,7 +4,7 @@ const Course = require('../models/courseModel');
 
 const createChapter = async(req, res)=>{
     const {courseId} = req.params;
-    const {title, description, videoPlayer, suggestions, } = req.body;
+    const {title, description, videoPlayer, suggestions, thumbnail, video, videoLength} = req.body;
     try {
         if(!courseId){
             return res.status(400).json({message: 'Course Id required'});
@@ -17,11 +17,11 @@ const createChapter = async(req, res)=>{
             const chapterCreated = await Chapter.create({
                 title,
                 description,
-                videoLength: "",
+                videoLength,
                 videoPlayer,
                 suggestions,
-                thumbnail : "",
-                video: "",
+                thumbnail,
+                video,
             });
             course.chapters.push(chapterCreated);
             await course.save();
@@ -39,41 +39,24 @@ const createChapter = async(req, res)=>{
 }
 
 const uploadChapterThumbnail = async (req, res) => {
-    const {chapterId} = req.params;
+    const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
     try {
-        if(!req.file){
-            res.status(400).json({ message: 'File not found' });
+        if(!thumbnail){
+            res.status(400).json({ message: 'thumbnail File not uploaded' });
         }
-        const chapter = await Chapter.findById(chapterId);
-        if (!chapter) {
-            return res.status(404).json({ message: 'Chapter not found' });
-        }
-        const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
-        chapter.thumbnail = thumbnail;
-        await chapter.save();
-        res.status(200).json({chapter ,message: 'Sucessfully Upload Chapter Thumbnail'});
-        
+        res.status(200).json({thumbnail ,message: 'Sucessfully Upload Chapter Thumbnail'});
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' }); 
     }
 };
 const uploadChapterVideo = async (req, res) => {
-    const {chapterId} = req.params;
-    const {videoLength} = req.body;
+    const video = "/" + req.file.destination + '/' + req.file.filename;
     try {
-        if (!req.file) {
-            res.status(400).json({ message: 'File not found' });
+        if (!video) {
+            res.status(400).json({ message: 'Video File not Uploaded' });
         }
-        const chapter = await Chapter.findById(chapterId);
-        if (!chapter) {
-            return res.status(404).json({ message: 'Chapter not found' });
-        }
-        const video = "/" + req.file.destination + '/' + req.file.filename;
-        chapter.video = video;
-        chapter.videoLength = videoLength;
-        await chapter.save();
-        res.status(200).json({chapter ,message: 'Sucessfully Upload Chapter Thumbnail'});
+        res.status(200).json({video ,message: 'Sucessfully Upload Chapter Thumbnail'});
         
     } catch (error) {
         console.log(error);

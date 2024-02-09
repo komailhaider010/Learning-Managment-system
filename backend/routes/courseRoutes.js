@@ -44,8 +44,8 @@ const videoUpload = multer({storage: videoStorage}).single('video')
 
 // FOR CREATING COURSE
 router.post('/api/course/create-course', authenticateAdmin,  CreateCourse);
-router.post('/api/:corseId/upload-thumbnail', authenticateAdmin, thumbnailUpload,  uploadCourseThumbnail);
-router.post('/api/:corseId/upload-demovideo', authenticateAdmin,videoUpload,  uploadCourseDemoVideo);
+router.post('/api/course/upload-thumbnail', authenticateAdmin, thumbnailUpload,  uploadCourseThumbnail);
+router.post('/api/course/upload-demovideo', authenticateAdmin,videoUpload,  uploadCourseDemoVideo);
 
 
 router.put('/api/:courseId/update-course-data', authenticateAdmin,  updateCourseData);
