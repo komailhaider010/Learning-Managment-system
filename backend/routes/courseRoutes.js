@@ -5,7 +5,13 @@ const fs = require('fs');
 const {authenticateUser,
     authenticateAdmin,
 } = require('../middleware/auth');
-const { CreateCourse, updateCourseData, getAllCourses, getCourseDetails, uploadCourseThumbnail, uploadCourseDemoVideo, getCourseByUser } = require('../controllers/courseController');
+const { CreateCourse,
+  updateCourseData,
+  getAllCourses,
+  getCourseDetails,
+  uploadCourseThumbnail,
+  uploadCourseDemoVideo,
+  getCourseByUser } = require('../controllers/courseController');
 const router = express.Router();
 
 const thumbnailStorage = multer.diskStorage({
