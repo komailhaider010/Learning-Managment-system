@@ -47,7 +47,6 @@ router.post('/api/course/create-course', authenticateAdmin,  CreateCourse);
 router.post('/api/course/upload-thumbnail', authenticateAdmin, thumbnailUpload,  uploadCourseThumbnail);
 router.post('/api/course/upload-demovideo', authenticateAdmin,videoUpload,  uploadCourseDemoVideo);
 
-
 router.put('/api/:courseId/update-course-data', authenticateAdmin,  updateCourseData);
 router.get('/api/course/all-courses', authenticateUser,  getAllCourses);
 router.get('/api/:courseId/course-details',  getCourseDetails);   
