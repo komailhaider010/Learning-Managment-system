@@ -17,8 +17,8 @@ const router = express.Router();
 
 // Configure storage for thumbnails
 const thumbnailStorage = configureStorage('public/course_thumbnails');
-const thumbnailUpload = multer({ storage: thumbnailStorage }).single('thumbnail');
 const videoStorage = configureStorage('public/course_demoVideos')
+const thumbnailUpload = multer({ storage: thumbnailStorage }).single('thumbnail');
 const videoUpload = multer({storage: videoStorage}).single('video')
 
 // FOR CREATING COURSE

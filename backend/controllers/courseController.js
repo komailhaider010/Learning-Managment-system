@@ -27,8 +27,11 @@ const CreateCourse = async (req, res) => {
 }
 
 const uploadCourseThumbnail = async (req, res) => {
-    const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
     try {
+        if(!req.file){
+            return res.status(400).json({message: 'File is required'})
+        }
+        const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
         if (!thumbnail) {
             return res.status(400).json({ message: "Thumbnail not uploaded"})
         }
@@ -39,8 +42,11 @@ const uploadCourseThumbnail = async (req, res) => {
     }
 };
 const uploadCourseDemoVideo = async (req, res) => {
-    const demoVideo = "/" + req.file.destination + '/' + req.file.filename;
     try {
+        if(!req.file){
+            return res.status(400).json({message: 'File is required'})
+        }
+        const demoVideo = "/" + req.file.destination + '/' + req.file.filename;
         if (!demoVideo) {
             return res.status(404).json({ message: 'Demo Video not Uploaded' });
         }

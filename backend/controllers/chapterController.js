@@ -39,8 +39,11 @@ const createChapter = async(req, res)=>{
 }
 
 const uploadChapterThumbnail = async (req, res) => {
-    const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
     try {
+        if(!req.file){
+            return res.status(400).json({message: 'File is required'})
+        }
+        const thumbnail = "/" + req.file.destination + '/' + req.file.filename;
         if(!thumbnail){
             res.status(400).json({ message: 'thumbnail File not uploaded' });
         }
@@ -51,8 +54,11 @@ const uploadChapterThumbnail = async (req, res) => {
     }
 };
 const uploadChapterVideo = async (req, res) => {
-    const video = "/" + req.file.destination + '/' + req.file.filename;
     try {
+        if(!req.file){
+            return res.status(400).json({message: 'File is required'})
+        }
+        const video = "/" + req.file.destination + '/' + req.file.filename;
         if (!video) {
             res.status(400).json({ message: 'Video File not Uploaded' });
         }
