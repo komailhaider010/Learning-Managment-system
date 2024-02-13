@@ -1,7 +1,6 @@
 const Course = require('../models/courseModel');
 const User = require('../models/userModel');
 // const Comment = require('../models/commentModel');
-const { handleFileUpload } = require('../config/fileUpload');
 
 const CreateCourse = async (req, res) => {
     const courseData = req.body;

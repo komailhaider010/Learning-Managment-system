@@ -7,39 +7,15 @@ const { createChapter,
     uploadChapterThumbnail,
     uploadChapterVideo,
  } = require("../controllers/chapterController");
+const { configureStorage } = require("../config/fileUpload");
 const router = express.Router();
+
+
 // Chapter Thumbnail Configurations
-const thumbnailStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadDir = 'public/chapter_thumbnails';
-        // Create the directory if it doesn't exist
-        if (!fs.existsSync(uploadDir)) {
-          fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        cb(null, uploadDir);
-      },
-      filename: function (req, file, cb) {
-        const fileUniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const fileExtension = path.extname(file.originalname).toLowerCase();
-        cb(null, fileUniqueName + fileExtension);
-      }
-});
 // Chapter Video Configurations
-const videoStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadDir = 'public/chapter_videos';
-        // Create the directory if it doesn't exist
-        if (!fs.existsSync(uploadDir)) {
-          fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        cb(null, uploadDir);
-      },
-      filename: function (req, file, cb) {
-        const fileUniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const fileExtension = path.extname(file.originalname).toLowerCase();
-        cb(null, fileUniqueName + fileExtension);
-      }
-});
+const thumbnailStorage = configureStorage('public/chapter_thumbnails');
+const videoStorage = configureStorage('public/chapter_videos');
+
 const thumbnailUpload = multer({storage: thumbnailStorage}).single('thumbnail')
 const videoUpload = multer({storage: videoStorage}).single('video')
 

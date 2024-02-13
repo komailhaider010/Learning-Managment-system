@@ -3,30 +3,23 @@ const fs = require('fs');
 const multer = require('multer');
 
 
-const handleFileUpload = async (file, allowedExtensions, folderPath, res) => {
-    if (file) {
-        const fileExtension = path.extname(file.name).toLowerCase();
-
-        if (!allowedExtensions.includes(fileExtension)) {
-            return res.status(400).json({ message: 'Invalid file type. Please Try Another File Type' });
-        }
-
-        if (!fs.existsSync(folderPath)) {
-            fs.mkdirSync(folderPath, { recursive: true });
-        }
-
-        const fileUniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const filePath = path.join(folderPath, fileUniqueName + fileExtension);
-
-        file.mv(filePath, (err) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ message: 'Error while uploading file' });
+// Generic function for configuring multer storage
+const configureStorage = (folderPath) => {
+    return multer.diskStorage({
+        destination: function (req, file, cb) {
+            const uploadDir = folderPath;
+            // Create the directory if it doesn't exist
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
             }
-        });
-
-        return fileUniqueName+fileExtension;
-    }
+            cb(null, uploadDir);
+        },
+        filename: function (req, file, cb) {
+            const fileUniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const fileExtension = path.extname(file.originalname).toLowerCase();
+            cb(null, fileUniqueName + fileExtension);
+        }
+    });
 };
 
-module.exports = { handleFileUpload };
+module.exports = { configureStorage };
