@@ -112,7 +112,7 @@ const getAllCourses = async (req, res) => {
 const getCourseDetails = async (req, res) => {
     const {courseId} = req.params;
     try {
-        const course = await Course.findById(courseId).populate('chapters', '-video -thumbnail -questions');
+        const course = await Course.findById(courseId).populate('chapters', '-video -thumbnail -questions').populate('reviews');
         if (!course) {
             return res.status(404).json({message: 'Course not found'});
         }
@@ -140,8 +140,16 @@ const getCourseByUser = async(req, res)=>{
                 },
               },
             },
-          })
-          .populate({
+          }).populate({
+            path: 'courses',
+            populate:{
+                path: 'reviews',
+                populate:{
+                    path: 'user',
+                    select: '-password -courses -isVerified',
+                }
+            }
+          }).populate({
             path: 'courses',
             populate: {
               path: 'chapters',
@@ -158,8 +166,6 @@ const getCourseByUser = async(req, res)=>{
               },
             },
           });
-        
-
         if(!courses) {
             return res.status(400).json({message: 'You are not eligible'});
         }
