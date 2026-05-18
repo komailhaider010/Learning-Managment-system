@@ -11,16 +11,19 @@ const chapterRoutes = require('./routes/chapterRoutes');
 const commentsRoutes = require('./routes/commentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const webhookRoutes = require('./routes/webhookRoutes');
+
+
 
 const PORT = process.env.PORT || 8000
 const app = express();
 
 app.use(status());
-app.use(express.json())
 app.use(express.urlencoded({extended: false}));
 app.use(cookieparser());
 app.use(cors());
 app.use('/public', express.static(__dirname + '/public'));
+app.use(express.json())
 
 
 app.get('/', (req, res) => {
@@ -30,6 +33,7 @@ app.get('/', (req, res) => {
 app.use(userRoutes);
 app.use(courseRoutes);
 app.use(paymentRoutes);
+app.use(webhookRoutes);
 app.use(chapterRoutes);
 app.use(commentsRoutes);
 app.use(reviewRoutes);
