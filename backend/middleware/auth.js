@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+// Autheticate User Form the token provided in the header of the request
 const authenticateUser = (req, res, next) => {
     const token = req.headers.authorization;
 
@@ -32,6 +33,8 @@ const authenticateUser = (req, res, next) => {
   
 };
 
+
+// Authenticate Admin Form the token provided in the header of the request
 const authenticateAdmin = (req, res, next) => {
   const token = req.headers.authorization;
 

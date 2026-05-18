@@ -6,7 +6,7 @@ try {
     // useUnifiedTopology:true
     // useCreateIndex:true
 }).then(()=>{
-    console.log(`connection Done with MongoDB`);
+    console.log(`✅ connection Done with MongoDB`);
 })
 } catch (error) {
     console.log(error);
