@@ -10,6 +10,7 @@ const courseRoutes = require('./routes/courseRoutes');
 const chapterRoutes = require('./routes/chapterRoutes');
 const commentsRoutes = require('./routes/commentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 const PORT = process.env.PORT || 8000
 const app = express();
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 
 app.use(userRoutes);
 app.use(courseRoutes);
+app.use(paymentRoutes);
 app.use(chapterRoutes);
 app.use(commentsRoutes);
 app.use(reviewRoutes);
