@@ -12,6 +12,7 @@ const commentsRoutes = require('./routes/commentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const webhookRoutes = require('./routes/webhookRoutes');
+const ordersRoutes = require('./routes/orderRoutes');
 
 
 
@@ -39,6 +40,7 @@ app.use("/api/payment", paymentRoutes);
 app.use(chapterRoutes);
 app.use(commentsRoutes);
 app.use(reviewRoutes);
+app.use("/api/orders", ordersRoutes);
 
 
 // Create server
