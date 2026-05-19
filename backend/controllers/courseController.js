@@ -1,3 +1,4 @@
+const { Cursor } = require('mongoose');
 const Course = require('../models/courseModel');
 const User = require('../models/userModel');
 // const Comment = require('../models/commentModel');
@@ -10,6 +11,7 @@ const CreateCourse = async (req, res) => {
             description: courseData.description,
             price: courseData.price,
             estimatedPrice: courseData.estimatedPrice,
+            currency: courseData.currency,
             tags: courseData.tags,
             level: courseData.level,
             thumbnail: courseData.thumbnail,

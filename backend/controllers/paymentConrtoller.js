@@ -31,7 +31,7 @@ const createPaymentIntent = async (req, res) => {
     });
     
 
-    res.json({ clientSecret: paymentIntent });
+    res.json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

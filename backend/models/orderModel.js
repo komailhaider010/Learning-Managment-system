@@ -6,13 +6,17 @@ const orderSchema = new mongoose.Schema({
         ref: 'user',
         required: true,
     },
-    userId: {
+    courseId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'course',
         required: true,
     },
     amount: {
         type: Number,
+        required: true,
+    },
+    currency: {
+        type: String,
         required: true,
     },
     paymentStatus: {

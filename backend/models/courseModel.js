@@ -16,6 +16,10 @@ const courseSchema = new mongoose.Schema({
     estimatedPrice: {
         type: Number,
     },
+    currency: {
+        type: String,
+        default: "usd",
+    },
     tags: {
         type: String,
     },

@@ -23,6 +23,9 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieparser());
 app.use(cors());
 app.use('/public', express.static(__dirname + '/public'));
+
+// User webhook before express.json() to get raw body for Stripe signature verification
+app.use("/api/webhook", webhookRoutes);
 app.use(express.json())
 
 
@@ -33,7 +36,6 @@ app.get('/', (req, res) => {
 app.use("/api/user",userRoutes);
 app.use(courseRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/webhook", webhookRoutes);
 app.use(chapterRoutes);
 app.use(commentsRoutes);
 app.use(reviewRoutes);
