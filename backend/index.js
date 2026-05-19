@@ -27,7 +27,7 @@ app.use(express.json())
 
 
 app.get('/', (req, res) => {
-    res.send('Welcome');
+    res.send('Welcome To Learning Management System API');
 });
 
 app.use("/api/user",userRoutes);
@@ -41,5 +41,5 @@ app.use(reviewRoutes);
 
 // Create server
 app.listen(PORT, ()=>{
-    console.log(`✅ server listening on ${PORT}`);
+    console.log(`✅ server listening on http://localhost:${PORT}`);
 });
