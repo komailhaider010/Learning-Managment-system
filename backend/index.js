@@ -30,10 +30,10 @@ app.get('/', (req, res) => {
     res.send('Welcome');
 });
 
-app.use(userRoutes);
+app.use("/api/user",userRoutes);
 app.use(courseRoutes);
-app.use(paymentRoutes);
-app.use(webhookRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/webhook", webhookRoutes);
 app.use(chapterRoutes);
 app.use(commentsRoutes);
 app.use(reviewRoutes);

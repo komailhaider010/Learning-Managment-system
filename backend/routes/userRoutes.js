@@ -34,12 +34,12 @@ const avatarStorage = multer.diskStorage({
  const avatarUpload = multer({storage: avatarStorage}).single('avatar')
 
 
-router.post('/api/user/signup', UserRegistration );
-router.post('/api/user/otp-verification',authenticateUser,  signupOTPVerification );
-router.post('/api/user/login', loginUser );
-router.put('/api/user/update-profile',authenticateUser,avatarUpload,  updateUserProfile );
-router.put('/api/user/update-password',authenticateUser,  updatePassword );
-router.post('/api/user/forget-password',authenticateUser,  forgetPassword );
-router.post('/api/user/reset-password',authenticateUser,  passwordOTPVerification);
+router.post('/signup', UserRegistration );
+router.post('/otp-verification',authenticateUser,  signupOTPVerification );
+router.post('/login', loginUser );
+router.put('/update-profile',authenticateUser,avatarUpload,  updateUserProfile );
+router.put('/update-password',authenticateUser,  updatePassword );
+router.post('/forget-password',authenticateUser,  forgetPassword );
+router.post('/reset-password',authenticateUser,  passwordOTPVerification);
 
 module.exports = router;

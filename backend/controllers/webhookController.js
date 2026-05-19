@@ -29,7 +29,7 @@ const stripeWebhook = async (req, res) => {
     const course = await Course.findById(courseId);
 
     const order = await Order.create({
-      user: req.user.userId,
+      user: userId,
       course: courseId,
       amount: course.price,
       paymentStatus: "paid",
