@@ -17,8 +17,8 @@ const stripeWebhook = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
 
-    console.log("✅ WEBHOOK HIT");
-    console.log("EVENT:", event.type);
+    // console.log("✅ WEBHOOK HIT");
+    // console.log("EVENT:", event.type);
 
   } catch (err) {
     console.log("❌ Webhook Error:", err.message);
@@ -31,13 +31,13 @@ const stripeWebhook = async (req, res) => {
 
       const paymentIntent = event.data.object;
 
-      console.log("METADATA:", paymentIntent.metadata);
+      // console.log("METADATA:", paymentIntent.metadata);
 
       const courseId = paymentIntent.metadata.courseId;
       const userId = paymentIntent.metadata.userId;
 
       if (!courseId || !userId) {
-        console.log("❌ Missing metadata");
+        // console.log("❌ Missing metadata");
         return res.status(400).json({
           error: "Metadata missing",
         });
@@ -46,7 +46,7 @@ const stripeWebhook = async (req, res) => {
       const course = await Course.findById(courseId);
 
       if (!course) {
-        console.log("❌ Course not found");
+        // console.log("❌ Course not found");
         return res.status(404).json({
           error: "Course not found",
         });
@@ -56,7 +56,7 @@ const stripeWebhook = async (req, res) => {
         userId: userId,
         courseId: courseId,
         amount: course.price,
-        currency: "usd",
+        currency: course.currency || "usd",
         paymentStatus: "paid",
         stripePaymentIntentId: paymentIntent.id,
       });
@@ -65,15 +65,13 @@ const stripeWebhook = async (req, res) => {
         $addToSet: { courses: courseId },
       });
 
-      console.log("✅ ORDER CREATED:", order._id);
-      console.log("✅ USER UPDATED");
+      // console.log("✅ ORDER CREATED:", order._id);
+      // console.log("✅ USER UPDATED");
+      res.status(200).json({success:true, orderId: order._id, message: "Order Successfully Processed"});
 
     }
 
-    res.status(200).json({
-      received: true,
-    });
-
+    
   } catch (err) {
     console.log("❌ INTERNAL WEBHOOK ERROR:", err);
 
@@ -123,7 +121,7 @@ const stripeWebhookTest = async (req, res) => {
     $addToSet: { courses: courseId },
   });
 
-  console.log("Order created:", order._id);
+  // console.log("Order created:", order._id)
 }
     res.json({ success: true });
   } catch (err) {
