@@ -100,13 +100,27 @@ const updateCourseData = async (req, res) => {
 
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find();
-        if (!courses) {
-            return res.status(404).json({message: 'No courses found'});
+        // 1. Get the current user to find the courses they already have
+        // (Assuming req.user.id is populated by your authentication middleware)
+        const {userId} = req.user; 
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json({courses});
+
+        // 2. Fetch courses where the _id is NOT IN the user's courses array
+        const courses = await Course.find({
+            _id: { $nin: user.courses }
+        });
+
+        // Mongoose find() returns an empty array [] if nothing matches, not null.
+        if (courses.length === 0) {
+            return res.status(404).json({ message: 'No new courses found' });
+        }
+
+        res.status(200).json({ courses });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ message: 'Internal Server Error' }); 
     }
 }
