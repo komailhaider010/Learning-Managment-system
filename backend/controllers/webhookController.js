@@ -65,6 +65,9 @@ const stripeWebhook = async (req, res) => {
         $addToSet: { courses: courseId },
       });
 
+      course.enroll.push(userId);
+      await course.save();
+
       // console.log("✅ ORDER CREATED:", order._id);
       // console.log("✅ USER UPDATED");
       res.status(200).json({success:true, orderId: order._id, message: "Order Successfully Processed"});
