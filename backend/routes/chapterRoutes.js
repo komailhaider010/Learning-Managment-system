@@ -6,7 +6,8 @@ const { authenticateUser, authenticateAdmin } = require("../middleware/auth");
 const { createChapter,
     uploadChapterThumbnail,
     uploadChapterVideo,
- } = require("../controllers/chapterController");
+    getChapterDetails
+} = require("../controllers/chapterController");
 const { configureStorage } = require("../config/fileUpload");
 const router = express.Router();
 
@@ -25,6 +26,8 @@ router.post("/api/chapter/upload-video",authenticateAdmin,videoUpload, uploadCha
 
 // After Uploading File Chapter Create
 router.post("/api/:courseId/create-chapter",authenticateAdmin,createChapter);
+
+router.get("/api/:chapterId/get-chapter-details", getChapterDetails);
 
   
 module.exports = router;

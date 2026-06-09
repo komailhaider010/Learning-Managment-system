@@ -70,10 +70,25 @@ const uploadChapterVideo = async (req, res) => {
     }
 };
 
+const getChapterDetails = async (req, res) => {
+    const {chapterId} = req.params;
+    try{
+        const chapterDetails = await Chapter.findById(chapterId)
+        .populate('questions');
+
+        res.status(200).json({chapterDetails, message: 'Chapter Details Fetched Successfully'});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+}
+
 
 
 module.exports = {
     createChapter,
     uploadChapterThumbnail,
     uploadChapterVideo,
+    getChapterDetails
 }
