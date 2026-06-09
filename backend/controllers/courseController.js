@@ -104,9 +104,6 @@ const getAllCourses = async (req, res) => {
         // (Assuming req.user.id is populated by your authentication middleware)
         const {userId} = req.user; 
         const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
 
         // 2. Fetch courses where the _id is NOT IN the user's courses array
         const courses = await Course.find({
