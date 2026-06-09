@@ -1,6 +1,7 @@
 const Course = require('../models/courseModel');
 const Review = require('../models/reviewModel');
 const User = require('../models/userModel');
+const Comment = require('../models/commentModel');
 
 const addReview = async (req, res) => {
     const { userId } = req.user;
@@ -57,6 +58,31 @@ const addReview = async (req, res) => {
     }
 };
 
+const addReplyToReview = async (req, res) => {
+    const { userId } = req.user;
+    const { reviewId } = req.params;
+    const { content } = req.body;
+    try{
+        const review = await Review.findById(reviewId);
+        if(!review){
+            return res.status(404).json({message: 'Review Not Found'});
+        }
+        const createComment = await Comment.create({
+            user: userId,
+            content,
+        });
+        review.replies.push(createComment);
+        await review.save();
+
+        res.status(200).json({review, message: 'Reply Added to Review Successfully'});
+
+    }catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+}
+
 module.exports = {
     addReview,
+    addReplyToReview
 }
