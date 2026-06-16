@@ -35,25 +35,52 @@ const authenticateUser = (req, res, next) => {
 
 
 // Authenticate Admin Form the token provided in the header of the request
+// const authenticateAdmin = (req, res, next) => {
+//   const token = req.headers.authorization;
+
+//   if (!token) {
+//     return res.status(401).json({ message: 'Unauthorized: Missing token' });
+//   }
+// const splitToken = token.split(' ')[1];
+// try {
+//   const decode = jwt.verify(splitToken, process.env.SECRET_KEY);
+//   if(!decode.role === 'admin'){
+//     return res.status(401).json({ message: 'Unauthorized: User' });
+//   }
+//   req.user = decode;
+//   next();
+  
+  
+// } catch (error) {
+//   return res.status(401).json({ message: 'Unauthorized: Invalid token' }); 
+// }
+// };
+
+//Admin Authentication Middleware
 const authenticateAdmin = (req, res, next) => {
   const token = req.headers.authorization;
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: Missing token' });
   }
-const splitToken = token.split(' ')[1];
-try {
-  const decode = jwt.verify(splitToken, process.env.SECRET_KEY);
-  if(!decode.role === 'admin'){
-    return res.status(401).json({ message: 'Unauthorized: User' });
+
+  // Good practice: Ensure the header actually contains a space before splitting
+  const splitToken = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
+
+  try {
+    const decode = jwt.verify(splitToken, process.env.SECRET_KEY);
+    
+    // FIXED: Correctly check if the user is NOT an admin
+    if (decode.role !== 'admin') {
+      return res.status(403).json({ message: 'Forbidden: Admin access required' });
+    }
+
+    req.user = decode;
+    next();
+    
+  } catch (error) {
+    return res.status(401).json({ message: 'Unauthorized: Invalid token' }); 
   }
-  req.user = decode;
-  next();
-  
-  
-} catch (error) {
-  return res.status(401).json({ message: 'Unauthorized: Invalid token' }); 
-}
 };
 
 module.exports = {
