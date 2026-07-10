@@ -13,9 +13,9 @@ const generateOTP = ()=>{
 // USER REGISTRATION AND SEND OTP TO USER EMAIL
 const UserRegistration = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { email } = req.body;
 
-        if(!name && !email && !password) {
+        if(!email) {
             return res.status(400).json({ message: 'Please enter all required fields'});
         }
         const userExists = await User.findOne({ email });
@@ -24,11 +24,11 @@ const UserRegistration = async (req, res) => {
         }
         // Hashed OTP
         const OTP = (generateOTP()).toString();
-        const subject = "OTP for Signup Registration"
+        const subject = "OTP for Signup Registration in LMS EduStream";
         try {
             sendOTPEmail(email, OTP, subject);
             const token = jwt.sign({
-                name, email, password, OTP
+                email, OTP
             },
                 process.env.SECRET_KEY,
                 {expiresIn: "5m"}
@@ -47,8 +47,8 @@ const UserRegistration = async (req, res) => {
 };
 // VERIFICATION USER OTP AND REGISTER USER
 const signupOTPVerification = async(req, res)=>{
-    const {userOTP} = req.body;
-    const {name, email, password, OTP} = req.user;
+    const {userOTP, name, password} = req.body;
+    const { email, OTP} = req.user;
     try {
         if(!userOTP){
             return res.status(400).json({ message: 'Please enter OTP password' });
@@ -56,8 +56,6 @@ const signupOTPVerification = async(req, res)=>{
         if(userOTP !== OTP){
             return res.status(400).json({ message: 'Please Try a Valid OTP' });
         }
-
-        const user = await User.findOne({ email});
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -167,7 +165,7 @@ const updatePassword = async (req, res) => {
 const forgetPassword = async(req, res) => {
     const {userId} = req.user;
     try {
-        const subject = "OTP For Reseting Password"
+        const subject = "OTP For Reseting Password in LMS EduStream"
         const OTP = generateOTP();
         const {email} = await User.findOne({_id: userId});
         sendOTPEmail(email, OTP, subject).then(() => {
