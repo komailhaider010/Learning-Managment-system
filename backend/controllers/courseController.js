@@ -133,18 +133,24 @@ const getCourseDetails = async (req, res) => {
   const { courseId } = req.params;
   try {
     const course = await Course.findById(courseId)
-      .populate("chapters", "title description suggestions")
-      .populate({
-        path: "reviews",
+  .populate("chapters", "title description suggestions")
+  .populate({
+    path: "reviews",
+    // Use an array to populate multiple distinct paths inside the review object
+    populate: [
+      {
+        path: "user",        // 1. Populate the user who made the review
+        select: "name avatar"
+      },
+      {
+        path: "replies",     // 2. Populate the replies array
         populate: {
-          path: "replies", // Deep populates the 'replies' field inside each review
-          select: "-replies", // Optional: exclude fields from replies if needed
-          populate: {
-            path: "user", // Populate the user who made the reply
-            select: "name avatar"
-          }
-        },
-      });
+          path: "user",      // 3. Deep populate the user who made the reply
+          select: "name avatar"
+        }
+      }
+    ]
+  });
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
@@ -215,6 +221,26 @@ const getCourseByUser = async (req, res) => {
   }
 };
 
+const getAllCoursesDashboard = async (req, res) => {
+  try {
+   
+
+    // 2. Fetch courses where the _id is NOT IN the user's courses array
+    const courses = await Course.find();
+
+    // Mongoose find() returns an empty array [] if nothing matches, not null.
+    if (courses.length === 0) {
+      return res.status(404).json({ message: "No new courses found" });
+    }
+
+    res.status(200).json({ courses });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   CreateCourse,
   uploadCourseThumbnail,
@@ -223,4 +249,5 @@ module.exports = {
   getAllCourses,
   getCourseDetails,
   getCourseByUser,
+  getAllCoursesDashboard,
 };
