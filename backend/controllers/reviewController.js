@@ -16,7 +16,7 @@ const addReview = async (req, res) => {
         
         const courseExist = courses.some(course => course._id.toString() === courseId.toString());
         if (!courseExist) {
-            return res.status(400).json({ message: 'Course does not exist' });
+            return res.status(400).json({ message: 'Sorry: You are not enrolled in this course' });
         }
 
         // 1. Create the new review

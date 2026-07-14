@@ -93,8 +93,13 @@ const loginUser =async (req, res) => {
 
         const token = jwt.sign({userId: user._id, email: user.email, role: user.role},
             process.env.SECRET_KEY,)
+        // 1. Convert Mongoose document to a plain JavaScript object
+        const userWithoutPassword = user.toObject();
+    
+        // 2. Safely remove the password field
+        delete userWithoutPassword.password;
         
-        res.status(200).json({token, user, message: 'Login Sucessfully'});
+        res.status(200).json({token, user: userWithoutPassword, message: 'Login Sucessfully'});
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });

@@ -12,7 +12,8 @@ const { CreateCourse,
   uploadCourseThumbnail,
   uploadCourseDemoVideo,
   getAllCoursesDashboard,
-  getCourseByUser } = require('../controllers/courseController');
+  getCourseByUser, 
+  getAllEnrolledCourses} = require('../controllers/courseController');
 const { configureStorage } = require('../config/fileUpload');
 const router = express.Router();
 
@@ -36,6 +37,7 @@ router.get('/api/course/dashboard-courses', getAllCoursesDashboard);
 
 router.get('/api/:courseId/course-details',  getCourseDetails);   
 // GET PURCHASED COURSE DATA
+router.get('/api/course/all-enrolled',authenticateUser,   getAllEnrolledCourses);
 router.get('/api/:courseId/course-data',authenticateUser,   getCourseByUser);   
 
 module.exports = router;
