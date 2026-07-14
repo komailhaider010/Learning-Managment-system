@@ -47,8 +47,10 @@ const addReview = async (req, res) => {
         updatedCourse.ratings = averageRating; // Make sure 'averageRating' exists in your Course Schema
         await updatedCourse.save();
 
+        const populatedReview = await newReview.populate('user', 'name _id avatar');
+
         res.status(200).json({ 
-            review: newReview, 
+            review: populatedReview, 
             averageRating, 
             message: 'Review Added and Course Rating Updated successfully' 
         });   
